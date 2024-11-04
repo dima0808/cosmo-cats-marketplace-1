@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ProductServiceImplTest {
+class ProductServiceImplTestIT {
 
   private ProductServiceImpl productService;
 

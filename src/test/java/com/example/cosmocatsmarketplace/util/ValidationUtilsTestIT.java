@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.request.WebRequest;
 
-class ValidationUtilsTest {
+class ValidationUtilsTestIT {
 
   @Test
   void testGetErrorResponseOfFieldErrors() {
