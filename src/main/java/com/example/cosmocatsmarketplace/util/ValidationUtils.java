@@ -1,24 +1,23 @@
 package com.example.cosmocatsmarketplace.util;
 
-import com.example.cosmocatsmarketplace.common.CustomErrorResponse;
+import static java.net.URI.create;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.ProblemDetail.forStatusAndDetail;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
-import org.springframework.web.context.request.WebRequest;
 
 public class ValidationUtils {
 
-  public static CustomErrorResponse getErrorResponseOfFieldErrors(List<FieldError> fieldErrors,
-      WebRequest request) {
-    return CustomErrorResponse.builder()
-        .status(HttpStatus.BAD_REQUEST.value())
-        .error("Bad Request")
-        .message(fieldErrors.stream()
-            .map(DefaultMessageSourceResolvable::getDefaultMessage)
-            .collect(Collectors.joining(", ")))
-        .path(request.getDescription(false).substring(4))
-        .build();
+  public static ProblemDetail getErrorResponseOfFieldErrors(List<FieldError> fieldErrors) {
+    ProblemDetail problemDetail = forStatusAndDetail(BAD_REQUEST, fieldErrors.stream()
+        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+        .collect(Collectors.joining(", ")));
+    problemDetail.setType(create("validation-error"));
+    problemDetail.setTitle("Field Validation Failed");
+    return problemDetail;
   }
 }

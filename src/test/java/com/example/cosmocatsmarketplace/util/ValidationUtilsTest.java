@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.example.cosmocatsmarketplace.common.CustomErrorResponse;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.request.WebRequest;
 
@@ -21,12 +21,10 @@ class ValidationUtilsTest {
     WebRequest webRequest = mock(WebRequest.class);
     when(webRequest.getDescription(false)).thenReturn("uri=/test");
 
-    CustomErrorResponse errorResponse = ValidationUtils
-        .getErrorResponseOfFieldErrors(fieldErrors, webRequest);
+    ProblemDetail errorResponse = ValidationUtils.getErrorResponseOfFieldErrors(fieldErrors);
 
     assertEquals(400, errorResponse.getStatus());
-    assertEquals("Bad Request", errorResponse.getError());
-    assertEquals("Field1 error message, Field2 error message", errorResponse.getMessage());
-    assertEquals("/test", errorResponse.getPath());
+    assertEquals("Field Validation Failed", errorResponse.getTitle());
+    assertEquals("Field1 error message, Field2 error message", errorResponse.getDetail());
   }
 }

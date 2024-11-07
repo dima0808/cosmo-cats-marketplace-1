@@ -1,13 +1,16 @@
 package com.example.cosmocatsmarketplace.web;
 
 import static com.example.cosmocatsmarketplace.util.ValidationUtils.getErrorResponseOfFieldErrors;
+import static java.net.URI.create;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
-import com.example.cosmocatsmarketplace.common.CustomErrorResponse;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,18 +24,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(ProductNotFoundException.class)
-  public ResponseEntity<CustomErrorResponse> handleProductNotFoundException(
-      ProductNotFoundException ex, WebRequest request) {
+  public ResponseEntity<ProblemDetail> handleProductNotFoundException(ProductNotFoundException ex) {
     log.info("Product Not Found exception raised");
-
-    CustomErrorResponse errorResponse = CustomErrorResponse.builder()
-        .status(HttpStatus.NOT_FOUND.value())
-        .error("Not Found")
-        .message(ex.getMessage())
-        .path(request.getDescription(false).substring(4))
-        .build();
-
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    ProblemDetail problemDetail = forStatusAndDetail(NOT_FOUND, ex.getMessage());
+    problemDetail.setType(create("product-not-found"));
+    problemDetail.setTitle("Product Not Found");
+    return ResponseEntity.status(NOT_FOUND).body(problemDetail);
   }
 
   @Override
@@ -40,6 +37,6 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
       @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
     log.info("Input params validation failed");
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors(), request));
+        .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors()));
   }
 }
