@@ -15,16 +15,16 @@ import java.util.List;
 @RequestMapping("/api/v1/cosmo-cats")
 public class CosmoCatController {
 
-    private final CosmoCatService cosmoCatService;
+  private final CosmoCatService cosmoCatService;
 
-    public CosmoCatController(CosmoCatService cosmoCatService) {
-        this.cosmoCatService = cosmoCatService;
-    }
+  public CosmoCatController(CosmoCatService cosmoCatService) {
+    this.cosmoCatService = cosmoCatService;
+  }
 
-    @GetMapping
-    @FeatureToggle(FeatureToggles.COSMO_CATS)
-    public ResponseEntity<List<CosmoCatDto>> getAllCosmoCats() {
-        List<CosmoCatDto> cosmoCats = cosmoCatService.getCosmoCats();
-        return ResponseEntity.ok(cosmoCats);
-    }
+  @GetMapping
+  @FeatureToggle(FeatureToggles.COSMO_CATS)
+  public ResponseEntity<List<CosmoCatDto>> getAllCosmoCats() {
+    List<CosmoCatDto> cosmoCats = cosmoCatService.getCosmoCats();
+    return ResponseEntity.ok(cosmoCats);
+  }
 }

@@ -10,18 +10,18 @@ import java.util.List;
 @Service
 public class CosmoCatServiceImpl implements CosmoCatService {
 
-    @Override
-    public List<CosmoCatDto> getCosmoCats() {
-        return List.of(
-                CosmoCatDto.builder()
-                        .name("Nebulion")
-                        .email("nebull2024@gmail.com")
-                        .build(),
+  @Override
+  public List<CosmoCatDto> getCosmoCats() {
+    return List.of(
+        CosmoCatDto.builder()
+            .name("Nebulion")
+            .email("nebull2024@gmail.com")
+            .build(),
 
-                CosmoCatDto.builder()
-                        .name("Galaxia")
-                        .email("galaxiakitty@gmail.com")
-                        .build()
-        );
-    }
+        CosmoCatDto.builder()
+            .name("Galaxia")
+            .email("galaxiakitty@gmail.com")
+            .build()
+    );
+  }
 }

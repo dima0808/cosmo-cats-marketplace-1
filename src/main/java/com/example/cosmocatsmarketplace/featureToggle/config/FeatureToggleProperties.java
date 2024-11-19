@@ -12,6 +12,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "application.feature")
 public class FeatureToggleProperties {
 
-    private Map<String, Boolean> toggles;
-
+  private Map<String, Boolean> toggles;
 }

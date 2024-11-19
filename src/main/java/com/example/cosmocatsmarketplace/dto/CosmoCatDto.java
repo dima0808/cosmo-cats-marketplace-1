@@ -9,7 +9,6 @@ import lombok.Value;
 
 @Value
 @Builder(toBuilder = true)
-
 public class CosmoCatDto {
 
 

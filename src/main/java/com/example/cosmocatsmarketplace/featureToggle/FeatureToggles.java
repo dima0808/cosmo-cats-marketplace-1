@@ -4,13 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum FeatureToggles {
-    COSMO_CATS("cosmoCats"),
-    KITTY_PRODUCTS("kittyProducts");
+  COSMO_CATS("cosmoCats"),
+  KITTY_PRODUCTS("kittyProducts");
 
-    private final String featureName;
+  private final String featureName;
 
-    FeatureToggles(String featureName) {
-        this.featureName = featureName;
-    }
-
+  FeatureToggles(String featureName) {
+    this.featureName = featureName;
+  }
 }

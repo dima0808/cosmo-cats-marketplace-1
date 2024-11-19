@@ -6,7 +6,8 @@ import lombok.Value;
 @Value
 @Builder(toBuilder = true)
 public class CosmoCat {
-    Long id;
-    String name;
-    String email;
+
+  Long id;
+  String name;
+  String email;
 }
