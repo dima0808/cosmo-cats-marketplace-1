@@ -2,6 +2,8 @@ package com.example.cosmocatsmarketplace.web;
 
 import com.example.cosmocatsmarketplace.domain.Product;
 import com.example.cosmocatsmarketplace.dto.ProductDto;
+import com.example.cosmocatsmarketplace.featureToggle.FeatureToggles;
+import com.example.cosmocatsmarketplace.featureToggle.annotation.FeatureToggle;
 import com.example.cosmocatsmarketplace.service.ProductService;
 import com.example.cosmocatsmarketplace.service.mapper.ProductMapper;
 import jakarta.validation.Valid;
@@ -23,38 +25,41 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProductController {
 
-  private final ProductService productService;
-  private final ProductMapper productMapper;
+    private final ProductService productService;
+    private final ProductMapper productMapper;
 
-  @GetMapping
-  public ResponseEntity<List<ProductDto>> getAllProducts() {
-    return ResponseEntity.ok(productService.getAllProducts().stream()
-        .map(productMapper::toProductDto)
-        .toList());
-  }
+    @GetMapping
+    @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts().stream()
+                .map(productMapper::toProductDto)
+                .toList());
+    }
 
-  @GetMapping("{productId}")
-  public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
-    return ResponseEntity.ok(productMapper.toProductDto(productService.getProductById(productId)));
-  }
+    @GetMapping("{productId}")
+    @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+        return ResponseEntity.ok(productMapper.toProductDto(productService.getProductById(productId)));
+    }
 
-  @PostMapping
-  public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toProductDto(
-        productService.createProduct(productMapper.toProduct(productDto))));
-  }
+    @PostMapping
+    @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
+    public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toProductDto(
+                productService.createProduct(productMapper.toProduct(productDto))));
+    }
 
-  @PutMapping("{productId}")
-  public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId,
-      @RequestBody ProductDto productDto) {
-    Product product = productMapper.toProduct(productDto);
-    product.setId(productId);
-    return ResponseEntity.ok(productMapper.toProductDto(productService.updateProduct(product)));
-  }
+    @PutMapping("{productId}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId,
+                                                    @RequestBody ProductDto productDto) {
+        Product product = productMapper.toProduct(productDto);
+        product.setId(productId);
+        return ResponseEntity.ok(productMapper.toProductDto(productService.updateProduct(product)));
+    }
 
-  @DeleteMapping("{productId}")
-  public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
-    productService.deleteProductById(productId);
-    return ResponseEntity.noContent().build();
-  }
+    @DeleteMapping("{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+        productService.deleteProductById(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

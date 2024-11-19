@@ -5,6 +5,7 @@ import static java.net.URI.create;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ProblemDetail.forStatusAndDetail;
 
+import com.example.cosmocatsmarketplace.featureToggle.exception.FeatureToggleNotEnabledException;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,20 +24,24 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @Slf4j
 public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(ProductNotFoundException.class)
-  public ResponseEntity<ProblemDetail> handleProductNotFoundException(ProductNotFoundException ex) {
-    log.info("Product Not Found exception raised");
-    ProblemDetail problemDetail = forStatusAndDetail(NOT_FOUND, ex.getMessage());
-    problemDetail.setType(create("product-not-found"));
-    problemDetail.setTitle("Product Not Found");
-    return ResponseEntity.status(NOT_FOUND).body(problemDetail);
-  }
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleProductNotFoundException(ProductNotFoundException ex) {
+        log.info("Product Not Found exception raised");
+        ProblemDetail problemDetail = forStatusAndDetail(NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("product-not-found"));
+        problemDetail.setTitle("Product Not Found");
+        return ResponseEntity.status(NOT_FOUND).body(problemDetail);
+    }
+    @ExceptionHandler(FeatureToggleNotEnabledException.class)
+    public ResponseEntity<String> handleFeatureToggleNotEnabled(FeatureToggleNotEnabledException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 
-  @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-      @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
-    log.info("Input params validation failed");
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors()));
-  }
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
+        log.info("Input params validation failed");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(getErrorResponseOfFieldErrors(ex.getBindingResult().getFieldErrors()));
+    }
 }
