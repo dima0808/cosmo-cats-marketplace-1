@@ -7,6 +7,7 @@ import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMappe
 import com.example.cosmocatsmarketplace.service.ProductService;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class ProductServiceImpl implements ProductService {
     existingProduct.setName(productDetails.getName());
     existingProduct.setDescription(productDetails.getDescription());
     existingProduct.setPrice(productDetails.getPrice());
-    existingProduct.setCategories(productDetails.getCategories());
+    existingProduct.setCategories(new ArrayList<>(productDetails.getCategories()));
     return productMapper.toProductDetails(productRepository.save(existingProduct));
   }
 

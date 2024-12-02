@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: lab-3-5
+      author: dmytro & dmytro
+      changes:
+        # Create table product_categories
+        - createTable:
+            tableName: product_categories
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: categories
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+
+        # Add foreign key constraint for product_id referencing product table
+        - addForeignKeyConstraint:
+            baseTableName: product_categories
+            baseColumnNames: product_id
+            referencedTableName: product
+            referencedColumnNames: id
+            constraintName: fkppc5s0f38pgb35a32dlgyhorc
+
+        # Add check constraint for categories column
+        - addCheckConstraint:
+            tableName: product_categories
+            constraintName: product_categories_categories_check
+            checkCondition: "(categories >= 0) AND (categories <= 6)"

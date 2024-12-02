@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,14 @@ public class CosmoCatController {
     return ResponseEntity.ok(response);
   }
 
+  @GetMapping("/contacts")
+  public ResponseEntity<DataWrapperDto> getAllCosmoCatsContacts() {
+    DataWrapperDto response = DataWrapperDto.builder()
+        .data(cosmoCatService.getAllCosmoCatContacts())
+        .build();
+    return ResponseEntity.ok(response);
+  }
+
   @GetMapping("{catReference}")
   public ResponseEntity<DataWrapperDto> getCosmoCatByReference(@PathVariable UUID catReference,
       @RequestParam(required = false) String include) {
@@ -78,7 +87,7 @@ public class CosmoCatController {
         .data(cosmoCatMapper.toCosmoCatDto(
             cosmoCatService.saveCosmoCat(cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))))
         .build();
-    return ResponseEntity.ok(response);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @PutMapping("{catReference}")
