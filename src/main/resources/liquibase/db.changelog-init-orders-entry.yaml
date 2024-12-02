@@ -36,7 +36,7 @@ databaseChangeLog:
             baseColumnNames: order_id
             referencedTableName: orders
             referencedColumnNames: id
-            constraintName: fk320jqnq779wg0g6cbaesssm99
+            constraintName: fk_order_entry_order
 
         # Add foreign key constraint for product_id referencing product table
         - addForeignKeyConstraint:
@@ -44,4 +44,4 @@ databaseChangeLog:
             baseColumnNames: product_id
             referencedTableName: product
             referencedColumnNames: id
-            constraintName: fk7xmv9oheciw8wus8bb5cpbf1c
+            constraintName: fk_order_entry_product

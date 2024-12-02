@@ -24,10 +24,4 @@ databaseChangeLog:
             baseColumnNames: product_id
             referencedTableName: product
             referencedColumnNames: id
-            constraintName: fkppc5s0f38pgb35a32dlgyhorc
-
-        # Add check constraint for categories column
-        - addCheckConstraint:
-            tableName: product_categories
-            constraintName: product_categories_categories_check
-            checkCondition: "(categories >= 0) AND (categories <= 6)"
+            constraintName: fk_product_categories_product

@@ -29,7 +29,7 @@ databaseChangeLog:
         - addUniqueConstraint:
             tableName: orders
             columnNames: order_number
-            constraintName: uknthkiu7pgmnqnu86i2jyoe2v7
+            constraintName: unique_order_number
 
         # Add foreign key constraint for cosmocat_id referencing cosmo_cat table
         - addForeignKeyConstraint:
@@ -37,4 +37,4 @@ databaseChangeLog:
             baseColumnNames: cosmocat_id
             referencedTableName: cosmo_cat
             referencedColumnNames: id
-            constraintName: fk3tblpnc4qp3q3f76mam3xiobe
+            constraintName: fk_orders_cosmocat

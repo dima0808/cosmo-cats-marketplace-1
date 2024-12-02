@@ -44,10 +44,10 @@ databaseChangeLog:
         - addUniqueConstraint:
             tableName: cosmo_cat
             columnNames: cat_reference
-            constraintName: ukhs3kelr6ghffb05xdantft0y
+            constraintName: unique_cat_reference
 
         # Add unique constraint on email
         - addUniqueConstraint:
             tableName: cosmo_cat
             columnNames: email
-            constraintName: ukkv3ry8uixy637htbainibe1y1
+            constraintName: unique_cat_email
