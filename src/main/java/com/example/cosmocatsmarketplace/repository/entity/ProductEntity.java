@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,8 @@ import lombok.NoArgsConstructor;
 public class ProductEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
+  @SequenceGenerator(name = "product_id_seq", sequenceName = "product_id_seq")
   private Long id;
 
   @Column(nullable = false)
@@ -47,5 +49,5 @@ public class ProductEntity {
   private List<CategoryType> categories;
 
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-  List<OrderEntryEntity> orderEntries;
+  private List<OrderEntryEntity> orderEntries;
 }

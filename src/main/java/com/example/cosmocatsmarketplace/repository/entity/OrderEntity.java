@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,8 @@ import org.hibernate.annotations.NaturalId;
 public class OrderEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_id_seq")
+  @SequenceGenerator(name = "orders_id_seq", sequenceName = "orders_id_seq")
   private Long id;
 
   @NaturalId
@@ -36,7 +38,7 @@ public class OrderEntity {
   private UUID orderNumber;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-  List<OrderEntryEntity> orderEntries;
+  private List<OrderEntryEntity> orderEntries;
 
   @ManyToOne
   @JoinColumn(name = "cosmocat_id", nullable = false)

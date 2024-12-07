@@ -3,6 +3,11 @@ databaseChangeLog:
       id: lab-3-2
       author: dmytro & dmytro
       changes:
+        # Create sequence for order_entry ID
+        - createSequence:
+            sequenceName: order_entry_id_seq
+            incrementBy: 50
+
         # Create table order_entry
         - createTable:
             tableName: order_entry
@@ -13,7 +18,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
-                    autoIncrement: true
               - column:
                   name: quantity
                   type: INTEGER

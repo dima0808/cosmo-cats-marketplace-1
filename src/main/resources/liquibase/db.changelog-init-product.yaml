@@ -3,6 +3,11 @@ databaseChangeLog:
       id: lab-3-4
       author: dmytro & dmytro
       changes:
+        # Create sequence for product ID
+        - createSequence:
+            sequenceName: product_id_seq
+            incrementBy: 50
+
         # Create table product
         - createTable:
             tableName: product
@@ -13,7 +18,6 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
-                    autoIncrement: true
               - column:
                   name: description
                   type: VARCHAR(255)
