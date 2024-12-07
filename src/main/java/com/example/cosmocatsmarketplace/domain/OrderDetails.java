@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class OrderDetails {
 
   private Long id;
-  UUID orderNumber;
+  private UUID orderNumber;
   private List<OrderEntryDetails> orderEntries;
 }

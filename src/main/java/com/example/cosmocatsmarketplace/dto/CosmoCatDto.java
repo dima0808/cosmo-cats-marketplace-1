@@ -16,17 +16,17 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CosmoCatDto {
 
-  UUID catReference;
+  private UUID catReference;
 
   @NotBlank(message = "Name is mandatory")
   @Size(max = 50, message = "Name cannot exceed 50 characters")
-  String name;
+  private String name;
 
   @NotBlank
   @Email(message = "Email should be valid")
-  String email;
+  private String email;
 
-  String address;
-  String phoneNumber;
-  List<UUID> orders;
+  private String address;
+  private String phoneNumber;
+  private List<UUID> orders;
 }

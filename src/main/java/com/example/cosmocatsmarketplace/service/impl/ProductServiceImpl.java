@@ -6,14 +6,14 @@ import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
 import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.ProductService;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
-import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
@@ -21,11 +21,13 @@ public class ProductServiceImpl implements ProductService {
   private final GeneralRepositoryMapper productMapper;
 
   @Override
+  @Transactional(readOnly = true)
   public List<ProductDetails> getAllProducts() {
     return productMapper.toProductDetails(productRepository.findAll());
   }
 
   @Override
+  @Transactional(readOnly = true)
   public ProductDetails getProductById(Long productId) {
     return productMapper.toProductDetails(
         productRepository.findById(productId)
@@ -33,12 +35,14 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional(propagation = Propagation.NESTED)
   public ProductDetails saveProduct(ProductDetails productDetails) {
     return productMapper.toProductDetails(
         productRepository.save(productMapper.toProductEntity(productDetails)));
   }
 
   @Override
+  @Transactional(propagation = Propagation.NESTED)
   public ProductDetails saveProduct(Long productId, ProductDetails productDetails) {
     ProductEntity existingProduct = productRepository.findById(productId)
         .orElseThrow(() -> new ProductNotFoundException(productId));
@@ -50,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
+  @Transactional
   public void deleteProductById(Long productId) {
     getProductById(productId);
     productRepository.deleteById(productId);

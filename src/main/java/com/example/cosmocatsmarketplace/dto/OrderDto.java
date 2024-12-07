@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderDto {
 
-  UUID orderNumber;
-  List<OrderEntryDto> orderEntries;
+  private UUID orderNumber;
+  private List<OrderEntryDto> orderEntries;
 }

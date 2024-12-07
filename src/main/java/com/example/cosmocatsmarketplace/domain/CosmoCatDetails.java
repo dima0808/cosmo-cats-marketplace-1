@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CosmoCatDetails {
 
-  Long id;
-  UUID catReference;
-  String name;
-  String email;
-  String address;
-  String phoneNumber;
-  List<OrderDetails> orders;
+  private Long id;
+  private UUID catReference;
+  private String name;
+  private String email;
+  private String address;
+  private String phoneNumber;
+  private List<OrderDetails> orders;
 }

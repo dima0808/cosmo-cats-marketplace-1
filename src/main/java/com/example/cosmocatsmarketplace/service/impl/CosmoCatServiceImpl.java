@@ -8,7 +8,8 @@ import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContacts;
 import com.example.cosmocatsmarketplace.service.CosmoCatService;
 
 import com.example.cosmocatsmarketplace.service.exception.CosmoCatNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class CosmoCatServiceImpl implements CosmoCatService {
 
@@ -25,11 +25,13 @@ public class CosmoCatServiceImpl implements CosmoCatService {
   private final GeneralRepositoryMapper cosmoCatMapper;
 
   @Override
+  @Transactional(readOnly = true)
   public List<CosmoCatDetails> getAllCosmoCats() {
     return cosmoCatMapper.toCosmoCatDetails(cosmoCatRepository.findAll());
   }
 
   @Override
+  @Transactional(readOnly = true)
   public CosmoCatDetails getCosmoCatByReference(UUID catReference, boolean includeOrders) {
     CosmoCatEntity cosmoCatEntity = cosmoCatRepository.findByNaturalId(catReference)
         .orElseThrow(() -> new CosmoCatNotFoundException(catReference));
@@ -40,17 +42,20 @@ public class CosmoCatServiceImpl implements CosmoCatService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public CosmoCatDetails getCosmoCatByReference(UUID catReference) {
     return getCosmoCatByReference(catReference, false);
   }
 
   @Override
+  @Transactional(propagation = Propagation.NESTED)
   public CosmoCatDetails saveCosmoCat(CosmoCatDetails cosmoCatDetails) {
     return cosmoCatMapper.toCosmoCatDetails(
         cosmoCatRepository.save(cosmoCatMapper.toCosmoCatEntity(cosmoCatDetails)));
   }
 
   @Override
+  @Transactional(propagation = Propagation.NESTED)
   public CosmoCatDetails saveCosmoCat(UUID catReference, CosmoCatDetails cosmoCatDetails) {
     CosmoCatEntity existingCosmoCatEntity = cosmoCatRepository.findByNaturalId(catReference)
         .orElseThrow(() -> new CosmoCatNotFoundException(catReference));
@@ -62,6 +67,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
   }
 
   @Override
+  @Transactional
   public void deleteCosmoCatByReference(UUID catReference) {
     getCosmoCatByReference(catReference);
     cosmoCatRepository.deleteByNaturalId(catReference);
