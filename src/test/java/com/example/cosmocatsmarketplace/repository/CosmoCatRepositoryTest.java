@@ -6,21 +6,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContacts;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class CosmoCatRepositoryTest {
 
   @Mock
   private CosmoCatRepository cosmoCatRepository;
-
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void testFindByEmail() {

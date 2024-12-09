@@ -10,30 +10,28 @@ import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
 import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Optional;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+@SpringBootTest(classes = {ProductServiceImpl.class})
+@ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
 
-  @Mock
+  @MockBean
   private ProductRepository productRepository;
 
-  @Mock
+  @MockBean
   private GeneralRepositoryMapper productMapper;
 
-  @InjectMocks
+  @Autowired
   private ProductServiceImpl productService;
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void testGetAllProducts() {

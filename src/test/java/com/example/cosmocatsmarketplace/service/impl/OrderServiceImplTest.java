@@ -13,37 +13,35 @@ import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
 import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.exception.OrderNotFoundException;
 import java.util.ArrayList;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+@SpringBootTest(classes = {OrderServiceImpl.class})
+@ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
 
-  @Mock
+  @MockBean
   private OrderRepository orderRepository;
 
-  @Mock
+  @MockBean
   private CosmoCatRepository cosmoCatRepository;
 
-  @Mock
+  @MockBean
   private GeneralRepositoryMapper orderMapper;
 
-  @Mock
+  @MockBean
   private ProductRepository productRepository;
 
-  @InjectMocks
+  @Autowired
   private OrderServiceImpl orderService;
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void testGetAllOrders() {
@@ -92,11 +90,13 @@ class OrderServiceImplTest {
     OrderEntity orderEntity = new OrderEntity();
     orderEntity.setOrderNumber(orderNumber);
     orderEntity.setCosmoCat(cosmoCatEntity);
+    orderEntity.setOrderEntries(new ArrayList<>());
 
     when(cosmoCatRepository.findByNaturalId(catReference)).thenReturn(Optional.of(cosmoCatEntity));
     when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(new ProductEntity()));
     when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
     when(orderMapper.toOrderDetails(any(OrderEntity.class))).thenReturn(orderDetails);
+    when(orderMapper.toOrderEntity(any(OrderDetails.class))).thenReturn(orderEntity);
 
     OrderDetails result = orderService.saveOrder(catReference, orderDetails);
     assertEquals(orderDetails, result);

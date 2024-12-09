@@ -117,8 +117,8 @@ public interface GeneralServiceMapper {
   @Named("toOrderEntryDetails")
   List<OrderEntryDetails> toOrderEntryDetails(List<OrderEntryDto> orderEntryDto);
 
+  @Mapping(target = "id", ignore = true)
   @Mapping(target = "productReference", source = "productReference")
-  @Mapping(target = "productReference", ignore = true)
   @Mapping(target = "name", ignore = true)
   @Mapping(target = "description", ignore = true)
   @Mapping(target = "price", ignore = true)

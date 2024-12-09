@@ -9,33 +9,29 @@ import com.example.cosmocatsmarketplace.repository.entity.CosmoCatEntity;
 import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
 import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContacts;
 import com.example.cosmocatsmarketplace.service.exception.CosmoCatNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@DisplayName("Order Service Tests")
+@SpringBootTest(classes = {CosmoCatServiceImpl.class})
+@ExtendWith(MockitoExtension.class)
 class CosmoCatServiceImplTest {
 
-  @Mock
+  @MockBean
   private CosmoCatRepository cosmoCatRepository;
 
-  @Mock
+  @MockBean
   private GeneralRepositoryMapper cosmoCatMapper;
 
-  @InjectMocks
+  @Autowired
   private CosmoCatServiceImpl cosmoCatService;
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void testGetAllCosmoCats() {

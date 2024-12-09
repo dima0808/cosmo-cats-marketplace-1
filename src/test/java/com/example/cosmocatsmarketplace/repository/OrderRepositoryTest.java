@@ -5,21 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class OrderRepositoryTest {
 
   @Mock
   private OrderRepository orderRepository;
-
-
-  @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-  }
 
   @Test
   void testFindOrderNumbersByCatReference() {
