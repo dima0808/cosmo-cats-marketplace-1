@@ -83,6 +83,7 @@ class OrderServiceImplTest {
   void testSaveOrder() {
     UUID catReference = UUID.randomUUID();
     UUID orderNumber = UUID.randomUUID();
+    UUID productReference = UUID.randomUUID();
     OrderDetails orderDetails = new OrderDetails();
     orderDetails.setOrderNumber(orderNumber);
     orderDetails.setOrderEntries(new ArrayList<>());
@@ -93,7 +94,7 @@ class OrderServiceImplTest {
     orderEntity.setCosmoCat(cosmoCatEntity);
 
     when(cosmoCatRepository.findByNaturalId(catReference)).thenReturn(Optional.of(cosmoCatEntity));
-    when(productRepository.findById(anyLong())).thenReturn(Optional.of(new ProductEntity()));
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(new ProductEntity()));
     when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
     when(orderMapper.toOrderDetails(any(OrderEntity.class))).thenReturn(orderDetails);
 

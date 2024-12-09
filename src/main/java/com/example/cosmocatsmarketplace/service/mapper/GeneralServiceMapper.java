@@ -68,8 +68,8 @@ public interface GeneralServiceMapper {
   @Named("toOrderEntryDto")
   List<OrderEntryDto> toOrderEntryDto(List<OrderEntryDetails> orderEntryDetails);
 
-  @Mapping(target = "id", source = "id")
   @Mapping(target = "name", source = "name")
+  @Mapping(target = "productReference", source = "productReference")
   @Mapping(target = "description", source = "description")
   @Mapping(target = "price", source = "price")
   @Mapping(target = "categories", source = "categories", qualifiedByName = "toCategoriesString")
@@ -111,17 +111,23 @@ public interface GeneralServiceMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "quantity", source = "quantity")
-  @Mapping(target = "product", source = "product", qualifiedByName = "toProductDetailsWithId")
+  @Mapping(target = "product", source = "product", qualifiedByName = "toProductDetailsWithReference")
   OrderEntryDetails toOrderEntryDetails(OrderEntryDto orderEntryDto);
 
   @Named("toOrderEntryDetails")
   List<OrderEntryDetails> toOrderEntryDetails(List<OrderEntryDto> orderEntryDto);
 
-  @Mapping(target = "id", source = "id")
-  @Named("toProductDetailsWithId")
-  ProductDetails toProductDetailsWithId(ProductDto productDto);
+  @Mapping(target = "productReference", source = "productReference")
+  @Mapping(target = "productReference", ignore = true)
+  @Mapping(target = "name", ignore = true)
+  @Mapping(target = "description", ignore = true)
+  @Mapping(target = "price", ignore = true)
+  @Mapping(target = "categories", ignore = true)
+  @Named("toProductDetailsWithReference")
+  ProductDetails toProductDetailsWithReference(ProductDto productDto);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "productReference", expression = "java(java.util.UUID.randomUUID())")
   @Mapping(target = "name", source = "name")
   @Mapping(target = "description", source = "description")
   @Mapping(target = "price", source = "price")

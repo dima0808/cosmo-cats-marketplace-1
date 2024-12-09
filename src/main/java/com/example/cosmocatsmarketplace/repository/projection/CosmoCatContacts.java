@@ -1,10 +1,7 @@
 package com.example.cosmocatsmarketplace.repository.projection;
 
-public interface CosmoCatContacts {
+import lombok.Builder;
 
-  String getName();
-
-  String getEmail();
-
-  String getPhoneNumber();
+@Builder
+public record CosmoCatContacts(String name, String email, String phoneNumber) {
 }

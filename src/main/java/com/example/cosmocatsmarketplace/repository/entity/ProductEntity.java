@@ -17,10 +17,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +36,10 @@ public class ProductEntity {
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
   @SequenceGenerator(name = "product_id_seq", sequenceName = "product_id_seq")
   private Long id;
+
+  @NaturalId
+  @Column(nullable = false, unique = true)
+  private UUID productReference;
 
   @Column(nullable = false)
   private String name;

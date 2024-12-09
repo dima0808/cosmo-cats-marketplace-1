@@ -3,7 +3,6 @@ package com.example.cosmocatsmarketplace.web;
 import com.example.cosmocatsmarketplace.AbstractIt;
 import com.example.cosmocatsmarketplace.dto.CosmoCatDto;
 import com.example.cosmocatsmarketplace.featureToggle.FeatureToggles;
-import com.example.cosmocatsmarketplace.featureToggle.aspect.FeatureToggleAspect;
 import com.example.cosmocatsmarketplace.featureToggle.service.FeatureToggleService;
 import com.example.cosmocatsmarketplace.repository.CosmoCatRepository;
 import com.example.cosmocatsmarketplace.repository.entity.CosmoCatEntity;
@@ -17,11 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -49,15 +45,6 @@ class CosmoCatControllerIT extends AbstractIt {
 
   @Autowired
   private ObjectMapper objectMapper;
-
-  @TestConfiguration
-  @EnableAspectJAutoProxy
-  static class TestConfig {
-    @Bean
-    public FeatureToggleAspect featureToggleAspect() {
-      return new FeatureToggleAspect();
-    }
-  }
 
   @BeforeEach
   void setUp() {

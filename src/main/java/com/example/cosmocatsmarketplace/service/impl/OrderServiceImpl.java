@@ -62,9 +62,9 @@ public class OrderServiceImpl implements OrderService {
     OrderEntity orderEntity = orderMapper.toOrderEntity(orderDetails);
     List<OrderEntryEntity> orderEntryEntityList = orderEntity.getOrderEntries().stream()
         .peek(orderEntryEntity -> {
-          Long productId = orderEntryEntity.getProduct().getId();
-          ProductEntity productEntity = productRepository.findById(productId)
-              .orElseThrow(() -> new ProductNotFoundException(productId));
+          UUID productReference = orderEntryEntity.getProduct().getProductReference();
+          ProductEntity productEntity = productRepository.findByNaturalId(productReference)
+              .orElseThrow(() -> new ProductNotFoundException(productReference));
           orderEntryEntity.setProduct(productEntity);
           orderEntryEntity.setOrder(orderEntity);
         })

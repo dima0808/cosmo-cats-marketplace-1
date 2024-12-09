@@ -9,6 +9,7 @@ import com.example.cosmocatsmarketplace.repository.ProductRepository;
 import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
 import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -47,25 +48,26 @@ class ProductServiceImplTest {
   }
 
   @Test
-  void testGetProductById() {
-    Long productId = 1L;
+  void testGetProductByReference() {
+    UUID productReference = UUID.randomUUID();
     ProductEntity entity = new ProductEntity();
     ProductDetails details = new ProductDetails();
 
-    when(productRepository.findById(productId)).thenReturn(Optional.of(entity));
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(entity));
     when(productMapper.toProductDetails(entity)).thenReturn(details);
 
-    ProductDetails result = productService.getProductById(productId);
+    ProductDetails result = productService.getProductByReference(productReference);
     assertEquals(details, result);
   }
 
   @Test
-  void testGetProductById_NotFound() {
-    Long productId = 1L;
+  void testGetProductByReference_NotFound() {
+    UUID productReference = UUID.randomUUID();
 
-    when(productRepository.findById(productId)).thenReturn(Optional.empty());
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.empty());
 
-    assertThrows(ProductNotFoundException.class, () -> productService.getProductById(productId));
+    assertThrows(ProductNotFoundException.class,
+        () -> productService.getProductByReference(productReference));
   }
 
   @Test
@@ -85,50 +87,52 @@ class ProductServiceImplTest {
 
   @Test
   void testSaveProductWithId() {
-    Long productId = 1L;
+    UUID productReference = UUID.randomUUID();
     ProductDetails productDetails = new ProductDetails();
     productDetails.setCategories(List.of(CategoryType.ELECTRONICS));
     ProductEntity existingEntity = new ProductEntity();
     ProductEntity savedEntity = new ProductEntity();
     ProductDetails savedDetails = new ProductDetails();
 
-    when(productRepository.findById(productId)).thenReturn(Optional.of(existingEntity));
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(existingEntity));
     when(productRepository.save(existingEntity)).thenReturn(savedEntity);
     when(productMapper.toProductDetails(savedEntity)).thenReturn(savedDetails);
 
-    ProductDetails result = productService.saveProduct(productId, productDetails);
+    ProductDetails result = productService.saveProduct(productReference, productDetails);
     assertEquals(savedDetails, result);
   }
 
   @Test
   void testSaveProductWithId_NotFound() {
-    Long productId = 1L;
+    UUID productReference = UUID.randomUUID();
     ProductDetails productDetails = new ProductDetails();
 
-    when(productRepository.findById(productId)).thenReturn(Optional.empty());
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.empty());
 
-    assertThrows(ProductNotFoundException.class, () -> productService.saveProduct(productId, productDetails));
+    assertThrows(ProductNotFoundException.class,
+        () -> productService.saveProduct(productReference, productDetails));
   }
 
   @Test
-  void testDeleteProductById() {
-    Long productId = 1L;
+  void testDeleteProductByReference() {
+    UUID productReference = UUID.randomUUID();
     ProductEntity entity = new ProductEntity();
 
-    when(productRepository.findById(productId)).thenReturn(Optional.of(entity));
-    doNothing().when(productRepository).deleteById(productId);
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(entity));
+    doNothing().when(productRepository).deleteByNaturalId(productReference);
 
-    productService.deleteProductById(productId);
+    productService.deleteProductByReference(productReference);
 
-    verify(productRepository, times(1)).deleteById(productId);
+    verify(productRepository, times(1)).deleteByNaturalId(productReference);
   }
 
   @Test
-  void testDeleteProductById_NotFound() {
-    Long productId = 1L;
+  void testDeleteProductByReference_NotFound() {
+    UUID productReference = UUID.randomUUID();
 
-    when(productRepository.findById(productId)).thenReturn(Optional.empty());
+    when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.empty());
 
-    assertThrows(ProductNotFoundException.class, () -> productService.deleteProductById(productId));
+    assertThrows(ProductNotFoundException.class,
+        () -> productService.deleteProductByReference(productReference));
   }
 }

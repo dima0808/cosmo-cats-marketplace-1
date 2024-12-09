@@ -7,6 +7,7 @@ import com.example.cosmocatsmarketplace.featureToggle.annotation.FeatureToggle;
 import com.example.cosmocatsmarketplace.service.ProductService;
 import com.example.cosmocatsmarketplace.service.mapper.GeneralServiceMapper;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +34,11 @@ public class ProductController {
     return ResponseEntity.ok(productMapper.toProductListDto(productService.getAllProducts()));
   }
 
-  @GetMapping("{productId}")
+  @GetMapping("{productReference}")
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
-  public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
-    return ResponseEntity.ok(productMapper.toProductDto(productService.getProductById(productId)));
+  public ResponseEntity<ProductDto> getProductById(@PathVariable UUID productReference) {
+    return ResponseEntity.ok(productMapper.toProductDto(
+        productService.getProductByReference(productReference)));
   }
 
   @PostMapping
@@ -46,16 +48,16 @@ public class ProductController {
         productService.saveProduct(productMapper.toProductDetails(productDto))));
   }
 
-  @PutMapping("{productId}")
-  public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId,
+  @PutMapping("{productReference}")
+  public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID productReference,
       @RequestBody ProductDto productDto) {
     return ResponseEntity.ok(productMapper.toProductDto(
-        productService.saveProduct(productId, productMapper.toProductDetails(productDto))));
+        productService.saveProduct(productReference, productMapper.toProductDetails(productDto))));
   }
 
-  @DeleteMapping("{productId}")
-  public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
-    productService.deleteProductById(productId);
+  @DeleteMapping("{productReference}")
+  public ResponseEntity<Void> deleteProduct(@PathVariable UUID productReference) {
+    productService.deleteProductByReference(productReference);
     return ResponseEntity.noContent().build();
   }
 }

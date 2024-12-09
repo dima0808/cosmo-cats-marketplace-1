@@ -11,6 +11,7 @@ import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
 import com.example.cosmocatsmarketplace.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.UUID;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,7 +95,7 @@ class ProductControllerIT extends AbstractIt {
     when(featureToggleService.check(FeatureToggles.KITTY_PRODUCTS.getFeatureName())).thenReturn(true);
     ProductEntity productEntity = saveProductEntity();
 
-    mockMvc.perform(get("/api/v1/products/{productId}", productEntity.getId())
+    mockMvc.perform(get("/api/v1/products/{productReference}", productEntity.getProductReference())
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
@@ -128,7 +129,7 @@ class ProductControllerIT extends AbstractIt {
     productDto.setPrice(200);
     productDto.setCategories(List.of("Clothes", "Other"));
 
-    mockMvc.perform(put("/api/v1/products/{productId}", productEntity.getId())
+    mockMvc.perform(put("/api/v1/products/{productReference}", productEntity.getProductReference())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(productDto)))
         .andExpect(status().isOk());
@@ -139,13 +140,14 @@ class ProductControllerIT extends AbstractIt {
   void testDeleteProduct() {
     ProductEntity productEntity = saveProductEntity();
 
-    mockMvc.perform(delete("/api/v1/products/{productId}", productEntity.getId())
+    mockMvc.perform(delete("/api/v1/products/{productReference}", productEntity.getProductReference())
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
   private ProductEntity saveProductEntity() {
     return productRepository.save(ProductEntity.builder()
+        .productReference(UUID.randomUUID())
         .name("Test Product")
         .description("Test Description")
         .price(100)

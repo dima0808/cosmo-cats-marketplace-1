@@ -25,71 +25,38 @@ class CosmoCatRepositoryTest {
   @Test
   void testFindByEmail() {
     String email = "test@example.com";
-    CosmoCatContacts contact = new CosmoCatContacts() {
-      @Override
-      public String getEmail() {
-        return email;
-      }
-
-      @Override
-      public String getPhoneNumber() {
-        return "+380999999999";
-      }
-
-      @Override
-      public String getName() {
-        return "Test Name";
-      }
-    };
+    CosmoCatContacts contact = CosmoCatContacts.builder()
+        .name("Test Name")
+        .email("test@example.com")
+        .phoneNumber("+380999999999")
+        .build();
 
     when(cosmoCatRepository.findByEmail(email)).thenReturn(Optional.of(contact));
 
     Optional<CosmoCatContacts> result = cosmoCatRepository.findByEmail(email);
     assertThat(result).isPresent();
-    assertThat(result.get().getEmail()).isEqualTo(email);
+    assertThat(result.get().email()).isEqualTo(email);
   }
 
   @Test
   void testFindAllByOrderByNameAsc() {
-    CosmoCatContacts contact1 = new CosmoCatContacts() {
-      @Override
-      public String getEmail() {
-        return "test1@example.com";
-      }
+    CosmoCatContacts contact1 = CosmoCatContacts.builder()
+        .name("Alice")
+        .email("test1@example.com")
+        .phoneNumber("+380999999999")
+        .build();
 
-      @Override
-      public String getPhoneNumber() {
-        return "+380999999999";
-      }
-
-      @Override
-      public String getName() {
-        return "Alice";
-      }
-    };
-
-    CosmoCatContacts contact2 = new CosmoCatContacts() {
-      @Override
-      public String getEmail() {
-        return "test2@example.com";
-      }
-
-      @Override
-      public String getPhoneNumber() {
-        return "+380999999999";
-      }
-
-      @Override
-      public String getName() {
-        return "Bob";
-      }
-    };
+    CosmoCatContacts contact2 = CosmoCatContacts.builder()
+        .name("Bob")
+        .email("test2@example.com")
+        .phoneNumber("+380999999999")
+        .build();
 
     when(cosmoCatRepository.findAllByOrderByNameAsc()).thenReturn(List.of(contact1, contact2));
 
     List<CosmoCatContacts> result = cosmoCatRepository.findAllByOrderByNameAsc();
     assertThat(result).hasSize(2);
-    assertThat(result.get(0).getName()).isEqualTo("Alice");
-    assertThat(result.get(1).getName()).isEqualTo("Bob");
+    assertThat(result.get(0).name()).isEqualTo("Alice");
+    assertThat(result.get(1).name()).isEqualTo("Bob");
   }
 }

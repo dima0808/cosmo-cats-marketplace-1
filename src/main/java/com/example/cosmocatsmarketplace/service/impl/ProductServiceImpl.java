@@ -8,6 +8,7 @@ import com.example.cosmocatsmarketplace.service.ProductService;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,10 +29,10 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional(readOnly = true)
-  public ProductDetails getProductById(Long productId) {
+  public ProductDetails getProductByReference(UUID productReference) {
     return productMapper.toProductDetails(
-        productRepository.findById(productId)
-            .orElseThrow(() -> new ProductNotFoundException(productId)));
+        productRepository.findByNaturalId(productReference)
+            .orElseThrow(() -> new ProductNotFoundException(productReference)));
   }
 
   @Override
@@ -43,9 +44,9 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional(propagation = Propagation.NESTED)
-  public ProductDetails saveProduct(Long productId, ProductDetails productDetails) {
-    ProductEntity existingProduct = productRepository.findById(productId)
-        .orElseThrow(() -> new ProductNotFoundException(productId));
+  public ProductDetails saveProduct(UUID productReference, ProductDetails productDetails) {
+    ProductEntity existingProduct = productRepository.findByNaturalId(productReference)
+        .orElseThrow(() -> new ProductNotFoundException(productReference));
     existingProduct.setName(productDetails.getName());
     existingProduct.setDescription(productDetails.getDescription());
     existingProduct.setPrice(productDetails.getPrice());
@@ -55,8 +56,8 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   @Transactional
-  public void deleteProductById(Long productId) {
-    getProductById(productId);
-    productRepository.deleteById(productId);
+  public void deleteProductByReference(UUID productReference) {
+    getProductByReference(productReference);
+    productRepository.deleteByNaturalId(productReference);
   }
 }

@@ -96,7 +96,9 @@ class OrderControllerIT extends AbstractIt {
     orderDto.setOrderEntries(List.of(
         OrderEntryDto.builder()
             .quantity(2)
-            .product(ProductDto.builder().id(productEntity.getId()).build())
+            .product(ProductDto.builder()
+                .productReference(productEntity.getProductReference())
+                .build())
             .build()
     ));
 
@@ -147,6 +149,7 @@ class OrderControllerIT extends AbstractIt {
         .build());
 
     productRepository.save(ProductEntity.builder()
+        .productReference(UUID.randomUUID())
         .name("Test Product")
         .description("Test Description")
         .price(100)

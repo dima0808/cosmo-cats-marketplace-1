@@ -2,16 +2,17 @@ package com.example.cosmocatsmarketplace.service;
 
 import com.example.cosmocatsmarketplace.domain.ProductDetails;
 import java.util.List;
+import java.util.UUID;
 
 public interface ProductService {
 
   List<ProductDetails> getAllProducts();
 
-  ProductDetails getProductById(Long productId);
+  ProductDetails getProductByReference(UUID productReference);
 
   ProductDetails saveProduct(ProductDetails productDetails);
 
-  ProductDetails saveProduct(Long productId, ProductDetails productDetails);
+  ProductDetails saveProduct(UUID productReference, ProductDetails productDetails);
 
-  void deleteProductById(Long productId);
+  void deleteProductByReference(UUID productReference);
 }
