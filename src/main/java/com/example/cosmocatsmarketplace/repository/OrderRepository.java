@@ -12,4 +12,6 @@ public interface OrderRepository extends NaturalIdRepository<OrderEntity, UUID> 
 
   @Query("SELECT o.orderNumber FROM OrderEntity o WHERE o.cosmoCat.catReference = :catReference")
   List<UUID> findOrderNumbersByCatReference(@Param("catReference") UUID catReference);
+
+  List<OrderEntity> findAllByCosmoCatCatReference(UUID catReference);
 }

@@ -36,6 +36,11 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  public List<OrderDetails> getAllOrdersByCatReference(UUID catReference) {
+    return orderMapper.toOrderDetails(orderRepository.findAllByCosmoCatCatReference(catReference));
+  }
+
+  @Override
   @Transactional(readOnly = true)
   public OrderDetails getOrderByNumber(UUID orderNumber) {
     return orderMapper.toOrderDetails(

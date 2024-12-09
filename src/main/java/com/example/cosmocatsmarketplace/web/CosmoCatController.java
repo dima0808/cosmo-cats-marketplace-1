@@ -1,15 +1,14 @@
 package com.example.cosmocatsmarketplace.web;
 
-import com.example.cosmocatsmarketplace.domain.CosmoCatDetails;
 import com.example.cosmocatsmarketplace.dto.CosmoCatDto;
-import com.example.cosmocatsmarketplace.dto.DataWrapperDto;
+import com.example.cosmocatsmarketplace.dto.CosmoCatListDto;
 import com.example.cosmocatsmarketplace.featureToggle.FeatureToggles;
 import com.example.cosmocatsmarketplace.featureToggle.annotation.FeatureToggle;
+import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContactsList;
 import com.example.cosmocatsmarketplace.service.CosmoCatService;
 import com.example.cosmocatsmarketplace.service.OrderService;
 import com.example.cosmocatsmarketplace.service.mapper.GeneralServiceMapper;
 import jakarta.validation.Valid;
-import java.util.HashMap;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,70 +33,35 @@ public class CosmoCatController {
 
   @GetMapping
   @FeatureToggle(FeatureToggles.COSMO_CATS)
-  public ResponseEntity<DataWrapperDto> getAllCosmoCats(
-      @RequestParam(required = false) String include) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(cosmoCatMapper.toCosmoCatDto(cosmoCatService.getAllCosmoCats()))
-        .build();
-    if (include != null && include.equals("orders")) {
-      HashMap<String, Object> included = new HashMap<>();
-      included.put("orders", cosmoCatMapper.toOrderDto(orderService.getAllOrders()));
-      response.setIncluded(included);
-    }
-    return ResponseEntity.ok(response);
+  public ResponseEntity<CosmoCatListDto> getAllCosmoCats() {
+    return ResponseEntity.ok(cosmoCatMapper.toCosmoCatListDto(cosmoCatService.getAllCosmoCats()));
   }
 
   @GetMapping("/contacts")
-  public ResponseEntity<DataWrapperDto> getAllCosmoCatsContacts() {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(cosmoCatService.getAllCosmoCatContacts())
-        .build();
-    return ResponseEntity.ok(response);
+  public ResponseEntity<CosmoCatContactsList> getAllCosmoCatsContacts() {
+    return ResponseEntity.ok(cosmoCatMapper.toCosmoCatContactsList(
+        cosmoCatService.getAllCosmoCatContacts()));
   }
 
   @GetMapping("{catReference}")
-  public ResponseEntity<DataWrapperDto> getCosmoCatByReference(@PathVariable UUID catReference,
-      @RequestParam(required = false) String include) {
-    DataWrapperDto response;
-    if (include != null && include.equals("orders")) {
-      CosmoCatDetails cosmoCatDetails = cosmoCatService.getCosmoCatByReference(catReference, true);
-      HashMap<String, Object> included = new HashMap<>();
-      included.put("orders", cosmoCatMapper.toOrderDto(cosmoCatDetails.getOrders()));
-      CosmoCatDto cosmoCatDto = cosmoCatMapper.toCosmoCatDto(cosmoCatDetails);
-      cosmoCatDto.setOrders(orderService.getOrderNumbersByCatReference(catReference));
-      response = DataWrapperDto.builder()
-          .data(cosmoCatDto)
-          .included(included)
-          .build();
-    } else {
-      CosmoCatDto cosmoCatDto = cosmoCatMapper.toCosmoCatDto(
-          cosmoCatService.getCosmoCatByReference(catReference));
-      cosmoCatDto.setOrders(orderService.getOrderNumbersByCatReference(catReference));
-      response = DataWrapperDto.builder()
-          .data(cosmoCatDto)
-          .build();
-    }
-    return ResponseEntity.ok(response);
+  public ResponseEntity<CosmoCatDto> getCosmoCatByReference(@PathVariable UUID catReference) {
+    CosmoCatDto cosmoCat = cosmoCatMapper.toCosmoCatDto(
+        cosmoCatService.getCosmoCatByReference(catReference, true));
+    cosmoCat.setOrders(orderService.getOrderNumbersByCatReference(catReference));
+    return ResponseEntity.ok(cosmoCat);
   }
 
   @PostMapping
-  public ResponseEntity<DataWrapperDto> createCosmoCat(@RequestBody @Valid CosmoCatDto cosmoCatDto) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(cosmoCatMapper.toCosmoCatDto(
-            cosmoCatService.saveCosmoCat(cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))))
-        .build();
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  public ResponseEntity<CosmoCatDto> createCosmoCat(@RequestBody @Valid CosmoCatDto cosmoCatDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(cosmoCatMapper.toCosmoCatDto(
+        cosmoCatService.saveCosmoCat(cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))));
   }
 
   @PutMapping("{catReference}")
-  public ResponseEntity<DataWrapperDto> updateCosmoCat(@PathVariable UUID catReference,
+  public ResponseEntity<CosmoCatDto> updateCosmoCat(@PathVariable UUID catReference,
       @RequestBody CosmoCatDto cosmoCatDto) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(cosmoCatMapper.toCosmoCatDto(
-            cosmoCatService.saveCosmoCat(
-                catReference, cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))))
-        .build();
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(cosmoCatMapper.toCosmoCatDto(
+        cosmoCatService.saveCosmoCat(catReference, cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))));
   }
 
   @DeleteMapping("{catReference}")

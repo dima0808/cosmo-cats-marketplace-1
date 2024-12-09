@@ -1,7 +1,7 @@
 package com.example.cosmocatsmarketplace.web;
 
-import com.example.cosmocatsmarketplace.dto.DataWrapperDto;
 import com.example.cosmocatsmarketplace.dto.ProductDto;
+import com.example.cosmocatsmarketplace.dto.ProductListDto;
 import com.example.cosmocatsmarketplace.featureToggle.FeatureToggles;
 import com.example.cosmocatsmarketplace.featureToggle.annotation.FeatureToggle;
 import com.example.cosmocatsmarketplace.service.ProductService;
@@ -29,40 +29,28 @@ public class ProductController {
 
   @GetMapping
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
-  public ResponseEntity<DataWrapperDto> getAllProducts() {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(productMapper.toProductDto(productService.getAllProducts()))
-        .build();
-    return ResponseEntity.ok(response);
+  public ResponseEntity<ProductListDto> getAllProducts() {
+    return ResponseEntity.ok(productMapper.toProductListDto(productService.getAllProducts()));
   }
 
   @GetMapping("{productId}")
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
-  public ResponseEntity<DataWrapperDto> getProductById(@PathVariable Long productId) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(productMapper.toProductDto(productService.getProductById(productId)))
-        .build();
-    return ResponseEntity.ok(response);
+  public ResponseEntity<ProductDto> getProductById(@PathVariable Long productId) {
+    return ResponseEntity.ok(productMapper.toProductDto(productService.getProductById(productId)));
   }
 
   @PostMapping
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
-  public ResponseEntity<DataWrapperDto> createProduct(@RequestBody @Valid ProductDto productDto) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(productMapper.toProductDto(
-            productService.saveProduct(productMapper.toProductDetails(productDto))))
-        .build();
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toProductDto(
+        productService.saveProduct(productMapper.toProductDetails(productDto))));
   }
 
   @PutMapping("{productId}")
-  public ResponseEntity<DataWrapperDto> updateProduct(@PathVariable Long productId,
+  public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId,
       @RequestBody ProductDto productDto) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(productMapper.toProductDto(
-            productService.saveProduct(productId, productMapper.toProductDetails(productDto))))
-        .build();
-    return ResponseEntity.ok(response);
+    return ResponseEntity.ok(productMapper.toProductDto(
+        productService.saveProduct(productId, productMapper.toProductDetails(productDto))));
   }
 
   @DeleteMapping("{productId}")

@@ -1,8 +1,8 @@
 package com.example.cosmocatsmarketplace.web;
 
 import com.example.cosmocatsmarketplace.domain.OrderDetails;
-import com.example.cosmocatsmarketplace.dto.DataWrapperDto;
 import com.example.cosmocatsmarketplace.dto.OrderDto;
+import com.example.cosmocatsmarketplace.dto.OrderListDto;
 import com.example.cosmocatsmarketplace.service.OrderService;
 import com.example.cosmocatsmarketplace.service.mapper.GeneralServiceMapper;
 import jakarta.validation.Valid;
@@ -27,30 +27,27 @@ public class OrderController {
   private final GeneralServiceMapper orderMapper;
 
   @GetMapping
-  public ResponseEntity<DataWrapperDto> getAllOrders() {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(orderMapper.toOrderDto(orderService.getAllOrders()))
-        .build();
-    return ResponseEntity.ok(response);
+  public ResponseEntity<OrderListDto> getAllOrders() {
+    return ResponseEntity.ok(orderMapper.toOrderListDto(orderService.getAllOrders()));
   }
 
   @GetMapping("{orderNumber}")
-  public ResponseEntity<DataWrapperDto> getOrderByNumber(@PathVariable UUID orderNumber) {
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(orderMapper.toOrderDto(orderService.getOrderByNumber(orderNumber)))
-        .build();
-    return ResponseEntity.ok(response);
+  public ResponseEntity<OrderDto> getOrderByNumber(@PathVariable UUID orderNumber) {
+    return ResponseEntity.ok(orderMapper.toOrderDto(orderService.getOrderByNumber(orderNumber)));
+  }
+
+  @GetMapping("/by-cat/{catReference}")
+  public ResponseEntity<OrderListDto> getAllOrdersByCat(@PathVariable UUID catReference) {
+    return ResponseEntity.ok(orderMapper.toOrderListDto(
+        orderService.getAllOrdersByCatReference(catReference)));
   }
 
   @PostMapping("/by-cat/{catReference}")
-  public ResponseEntity<DataWrapperDto> addOrder(@PathVariable UUID catReference,
+  public ResponseEntity<OrderDto> addOrder(@PathVariable UUID catReference,
       @RequestBody @Valid OrderDto orderDto) {
     OrderDetails orderDetails = orderService.saveOrder(
         catReference, orderMapper.toOrderDetails(orderDto));
-    DataWrapperDto response = DataWrapperDto.builder()
-        .data(orderMapper.toOrderDto(orderDetails))
-        .build();
-    return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    return ResponseEntity.status(HttpStatus.CREATED).body(orderMapper.toOrderDto(orderDetails));
   }
 
   @DeleteMapping("{orderNumber}")

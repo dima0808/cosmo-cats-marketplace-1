@@ -8,6 +8,8 @@ public interface OrderService {
 
   List<OrderDetails> getAllOrders();
 
+  List<OrderDetails> getAllOrdersByCatReference(UUID catReference);
+
   OrderDetails getOrderByNumber(UUID orderNumber);
 
   List<UUID> getOrderNumbersByCatReference(UUID catReference);

@@ -6,9 +6,14 @@ import com.example.cosmocatsmarketplace.domain.OrderDetails;
 import com.example.cosmocatsmarketplace.domain.OrderEntryDetails;
 import com.example.cosmocatsmarketplace.domain.ProductDetails;
 import com.example.cosmocatsmarketplace.dto.CosmoCatDto;
+import com.example.cosmocatsmarketplace.dto.CosmoCatListDto;
 import com.example.cosmocatsmarketplace.dto.OrderDto;
 import com.example.cosmocatsmarketplace.dto.OrderEntryDto;
+import com.example.cosmocatsmarketplace.dto.OrderListDto;
 import com.example.cosmocatsmarketplace.dto.ProductDto;
+import com.example.cosmocatsmarketplace.dto.ProductListDto;
+import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContacts;
+import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContactsList;
 import java.util.List;
 import java.util.UUID;
 import org.mapstruct.Mapper;
@@ -28,6 +33,12 @@ public interface GeneralServiceMapper {
 
   List<CosmoCatDto> toCosmoCatDto(List<CosmoCatDetails> cosmoCatDetails);
 
+  default CosmoCatListDto toCosmoCatListDto(List<CosmoCatDetails> cosmoCatDetails) {
+    return CosmoCatListDto.builder()
+        .cosmoCats(toCosmoCatDto(cosmoCatDetails))
+        .build();
+  }
+
   @Named("toOrderNumbers")
   default List<UUID> toOrderNumbers(List<OrderDetails> orders) {
     if (orders == null) {
@@ -43,6 +54,12 @@ public interface GeneralServiceMapper {
   OrderDto toOrderDto(OrderDetails orderDetails);
 
   List<OrderDto> toOrderDto(List<OrderDetails> orderDetails);
+
+  default OrderListDto toOrderListDto(List<OrderDetails> orderDetails) {
+    return OrderListDto.builder()
+        .orders(toOrderDto(orderDetails))
+        .build();
+  }
 
   @Mapping(target = "quantity", source = "quantity")
   @Mapping(target = "product", source = "product", qualifiedByName = "toProductDto")
@@ -60,6 +77,12 @@ public interface GeneralServiceMapper {
   ProductDto toProductDto(ProductDetails productDetails);
 
   List<ProductDto> toProductDto(List<ProductDetails> productDetails);
+
+  default ProductListDto toProductListDto(List<ProductDetails> productDetails) {
+    return ProductListDto.builder()
+        .products(toProductDto(productDetails))
+        .build();
+  }
 
   @Named("toCategoriesString")
   default List<String> toCategoriesString(List<CategoryType> categoriesType) {
@@ -112,5 +135,11 @@ public interface GeneralServiceMapper {
     return categoriesString.stream()
         .map((categoryString) -> CategoryType.valueOf(categoryString.toUpperCase()))
         .toList();
+  }
+
+  default CosmoCatContactsList toCosmoCatContactsList(List<CosmoCatContacts> contacts) {
+    return CosmoCatContactsList.builder()
+        .contacts(contacts)
+        .build();
   }
 }
