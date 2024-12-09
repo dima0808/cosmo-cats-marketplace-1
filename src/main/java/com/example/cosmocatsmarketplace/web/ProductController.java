@@ -5,7 +5,7 @@ import com.example.cosmocatsmarketplace.dto.ProductListDto;
 import com.example.cosmocatsmarketplace.featureToggle.FeatureToggles;
 import com.example.cosmocatsmarketplace.featureToggle.annotation.FeatureToggle;
 import com.example.cosmocatsmarketplace.service.ProductService;
-import com.example.cosmocatsmarketplace.service.mapper.GeneralServiceMapper;
+import com.example.cosmocatsmarketplace.service.mapper.ProductServiceMapper;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -26,33 +26,33 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
   private final ProductService productService;
-  private final GeneralServiceMapper productMapper;
+  private final ProductServiceMapper productServiceMapper;
 
   @GetMapping
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
   public ResponseEntity<ProductListDto> getAllProducts() {
-    return ResponseEntity.ok(productMapper.toProductListDto(productService.getAllProducts()));
+    return ResponseEntity.ok(productServiceMapper.toProductListDto(productService.getAllProducts()));
   }
 
   @GetMapping("{productReference}")
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
   public ResponseEntity<ProductDto> getProductById(@PathVariable UUID productReference) {
-    return ResponseEntity.ok(productMapper.toProductDto(
+    return ResponseEntity.ok(productServiceMapper.toProductDto(
         productService.getProductByReference(productReference)));
   }
 
   @PostMapping
   @FeatureToggle(FeatureToggles.KITTY_PRODUCTS)
   public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.toProductDto(
-        productService.saveProduct(productMapper.toProductDetails(productDto))));
+    return ResponseEntity.status(HttpStatus.CREATED).body(productServiceMapper.toProductDto(
+        productService.saveProduct(productServiceMapper.toProductDetails(productDto))));
   }
 
   @PutMapping("{productReference}")
   public ResponseEntity<ProductDto> updateProduct(@PathVariable UUID productReference,
       @RequestBody ProductDto productDto) {
-    return ResponseEntity.ok(productMapper.toProductDto(
-        productService.saveProduct(productReference, productMapper.toProductDetails(productDto))));
+    return ResponseEntity.ok(productServiceMapper.toProductDto(
+        productService.saveProduct(productReference, productServiceMapper.toProductDetails(productDto))));
   }
 
   @DeleteMapping("{productReference}")

@@ -7,7 +7,7 @@ import com.example.cosmocatsmarketplace.featureToggle.annotation.FeatureToggle;
 import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContactsList;
 import com.example.cosmocatsmarketplace.service.CosmoCatService;
 import com.example.cosmocatsmarketplace.service.OrderService;
-import com.example.cosmocatsmarketplace.service.mapper.GeneralServiceMapper;
+import com.example.cosmocatsmarketplace.service.mapper.CosmoCatServiceMapper;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,23 +29,23 @@ public class CosmoCatController {
 
   private final CosmoCatService cosmoCatService;
   private final OrderService orderService;
-  private final GeneralServiceMapper cosmoCatMapper;
+  private final CosmoCatServiceMapper cosmoCatServiceMapper;
 
   @GetMapping
   @FeatureToggle(FeatureToggles.COSMO_CATS)
   public ResponseEntity<CosmoCatListDto> getAllCosmoCats() {
-    return ResponseEntity.ok(cosmoCatMapper.toCosmoCatListDto(cosmoCatService.getAllCosmoCats()));
+    return ResponseEntity.ok(cosmoCatServiceMapper.toCosmoCatListDto(cosmoCatService.getAllCosmoCats()));
   }
 
   @GetMapping("/contacts")
   public ResponseEntity<CosmoCatContactsList> getAllCosmoCatsContacts() {
-    return ResponseEntity.ok(cosmoCatMapper.toCosmoCatContactsList(
+    return ResponseEntity.ok(cosmoCatServiceMapper.toCosmoCatContactsList(
         cosmoCatService.getAllCosmoCatContacts()));
   }
 
   @GetMapping("{catReference}")
   public ResponseEntity<CosmoCatDto> getCosmoCatByReference(@PathVariable UUID catReference) {
-    CosmoCatDto cosmoCat = cosmoCatMapper.toCosmoCatDto(
+    CosmoCatDto cosmoCat = cosmoCatServiceMapper.toCosmoCatDto(
         cosmoCatService.getCosmoCatByReference(catReference, true));
     cosmoCat.setOrders(orderService.getOrderNumbersByCatReference(catReference));
     return ResponseEntity.ok(cosmoCat);
@@ -53,15 +53,15 @@ public class CosmoCatController {
 
   @PostMapping
   public ResponseEntity<CosmoCatDto> createCosmoCat(@RequestBody @Valid CosmoCatDto cosmoCatDto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(cosmoCatMapper.toCosmoCatDto(
-        cosmoCatService.saveCosmoCat(cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))));
+    return ResponseEntity.status(HttpStatus.CREATED).body(cosmoCatServiceMapper.toCosmoCatDto(
+        cosmoCatService.saveCosmoCat(cosmoCatServiceMapper.toCosmoCatDetails(cosmoCatDto))));
   }
 
   @PutMapping("{catReference}")
   public ResponseEntity<CosmoCatDto> updateCosmoCat(@PathVariable UUID catReference,
       @RequestBody CosmoCatDto cosmoCatDto) {
-    return ResponseEntity.ok(cosmoCatMapper.toCosmoCatDto(
-        cosmoCatService.saveCosmoCat(catReference, cosmoCatMapper.toCosmoCatDetails(cosmoCatDto))));
+    return ResponseEntity.ok(cosmoCatServiceMapper.toCosmoCatDto(
+        cosmoCatService.saveCosmoCat(catReference, cosmoCatServiceMapper.toCosmoCatDetails(cosmoCatDto))));
   }
 
   @DeleteMapping("{catReference}")

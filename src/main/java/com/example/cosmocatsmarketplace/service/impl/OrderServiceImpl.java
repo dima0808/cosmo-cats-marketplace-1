@@ -8,7 +8,7 @@ import com.example.cosmocatsmarketplace.repository.entity.CosmoCatEntity;
 import com.example.cosmocatsmarketplace.repository.entity.OrderEntity;
 import com.example.cosmocatsmarketplace.repository.entity.OrderEntryEntity;
 import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
-import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
+import com.example.cosmocatsmarketplace.repository.mapper.OrderRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.OrderService;
 import com.example.cosmocatsmarketplace.service.exception.CosmoCatNotFoundException;
 import com.example.cosmocatsmarketplace.service.exception.OrderNotFoundException;
@@ -26,24 +26,24 @@ public class OrderServiceImpl implements OrderService {
 
   private final OrderRepository orderRepository;
   private final CosmoCatRepository cosmoCatRepository;
-  private final GeneralRepositoryMapper orderMapper;
+  private final OrderRepositoryMapper orderRepositoryMapper;
   private final ProductRepository productRepository;
 
   @Override
   @Transactional(readOnly = true)
   public List<OrderDetails> getAllOrders() {
-    return orderMapper.toOrderDetails(orderRepository.findAll());
+    return orderRepositoryMapper.toOrderDetails(orderRepository.findAll());
   }
 
   @Override
   public List<OrderDetails> getAllOrdersByCatReference(UUID catReference) {
-    return orderMapper.toOrderDetails(orderRepository.findAllByCosmoCatCatReference(catReference));
+    return orderRepositoryMapper.toOrderDetails(orderRepository.findAllByCosmoCatCatReference(catReference));
   }
 
   @Override
   @Transactional(readOnly = true)
   public OrderDetails getOrderByNumber(UUID orderNumber) {
-    return orderMapper.toOrderDetails(
+    return orderRepositoryMapper.toOrderDetails(
         orderRepository.findByNaturalId(orderNumber)
             .orElseThrow(() -> new OrderNotFoundException(orderNumber)));
   }
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
   public OrderDetails saveOrder(UUID catReference, OrderDetails orderDetails) {
     CosmoCatEntity cosmoCatEntity = cosmoCatRepository.findByNaturalId(catReference)
         .orElseThrow(() -> new CosmoCatNotFoundException(catReference));
-    OrderEntity orderEntity = orderMapper.toOrderEntity(orderDetails);
+    OrderEntity orderEntity = orderRepositoryMapper.toOrderEntity(orderDetails);
     List<OrderEntryEntity> orderEntryEntityList = orderEntity.getOrderEntries().stream()
         .peek(orderEntryEntity -> {
           UUID productReference = orderEntryEntity.getProduct().getProductReference();
@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         .toList();
     orderEntity.setOrderEntries(orderEntryEntityList);
     orderEntity.setCosmoCat(cosmoCatEntity);
-    return orderMapper.toOrderDetails(orderRepository.save(orderEntity));
+    return orderRepositoryMapper.toOrderDetails(orderRepository.save(orderEntity));
   }
 
   @Override

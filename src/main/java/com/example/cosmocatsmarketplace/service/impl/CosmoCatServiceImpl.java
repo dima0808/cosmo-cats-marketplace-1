@@ -3,7 +3,7 @@ package com.example.cosmocatsmarketplace.service.impl;
 import com.example.cosmocatsmarketplace.domain.CosmoCatDetails;
 import com.example.cosmocatsmarketplace.repository.CosmoCatRepository;
 import com.example.cosmocatsmarketplace.repository.entity.CosmoCatEntity;
-import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
+import com.example.cosmocatsmarketplace.repository.mapper.CosmoCatRepositoryMapper;
 import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContacts;
 import com.example.cosmocatsmarketplace.service.CosmoCatService;
 
@@ -22,12 +22,12 @@ import java.util.List;
 public class CosmoCatServiceImpl implements CosmoCatService {
 
   private final CosmoCatRepository cosmoCatRepository;
-  private final GeneralRepositoryMapper cosmoCatMapper;
+  private final CosmoCatRepositoryMapper cosmoCatRepositoryMapper;
 
   @Override
   @Transactional(readOnly = true)
   public List<CosmoCatDetails> getAllCosmoCats() {
-    return cosmoCatMapper.toCosmoCatDetails(cosmoCatRepository.findAll());
+    return cosmoCatRepositoryMapper.toCosmoCatDetails(cosmoCatRepository.findAll());
   }
 
   @Override
@@ -38,7 +38,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
     if (includeOrders) {
       Hibernate.initialize(cosmoCatEntity.getOrders());
     }
-    return cosmoCatMapper.toCosmoCatDetails(cosmoCatEntity);
+    return cosmoCatRepositoryMapper.toCosmoCatDetails(cosmoCatEntity);
   }
 
   @Override
@@ -50,8 +50,8 @@ public class CosmoCatServiceImpl implements CosmoCatService {
   @Override
   @Transactional(propagation = Propagation.NESTED)
   public CosmoCatDetails saveCosmoCat(CosmoCatDetails cosmoCatDetails) {
-    return cosmoCatMapper.toCosmoCatDetails(
-        cosmoCatRepository.save(cosmoCatMapper.toCosmoCatEntity(cosmoCatDetails)));
+    return cosmoCatRepositoryMapper.toCosmoCatDetails(
+        cosmoCatRepository.save(cosmoCatRepositoryMapper.toCosmoCatEntity(cosmoCatDetails)));
   }
 
   @Override
@@ -63,7 +63,7 @@ public class CosmoCatServiceImpl implements CosmoCatService {
     existingCosmoCatEntity.setEmail(cosmoCatDetails.getEmail());
     existingCosmoCatEntity.setAddress(cosmoCatDetails.getAddress());
     existingCosmoCatEntity.setPhoneNumber(cosmoCatDetails.getPhoneNumber());
-    return cosmoCatMapper.toCosmoCatDetails(cosmoCatRepository.save(existingCosmoCatEntity));
+    return cosmoCatRepositoryMapper.toCosmoCatDetails(cosmoCatRepository.save(existingCosmoCatEntity));
   }
 
   @Override

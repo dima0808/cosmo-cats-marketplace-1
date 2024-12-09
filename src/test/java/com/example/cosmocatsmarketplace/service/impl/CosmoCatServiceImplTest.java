@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.example.cosmocatsmarketplace.domain.CosmoCatDetails;
 import com.example.cosmocatsmarketplace.repository.CosmoCatRepository;
 import com.example.cosmocatsmarketplace.repository.entity.CosmoCatEntity;
-import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
+import com.example.cosmocatsmarketplace.repository.mapper.CosmoCatRepositoryMapper;
 import com.example.cosmocatsmarketplace.repository.projection.CosmoCatContacts;
 import com.example.cosmocatsmarketplace.service.exception.CosmoCatNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class CosmoCatServiceImplTest {
   private CosmoCatRepository cosmoCatRepository;
 
   @MockBean
-  private GeneralRepositoryMapper cosmoCatMapper;
+  private CosmoCatRepositoryMapper cosmoCatRepositoryMapper;
 
   @Autowired
   private CosmoCatServiceImpl cosmoCatService;
@@ -39,7 +39,7 @@ class CosmoCatServiceImplTest {
     List<CosmoCatDetails> details = List.of(new CosmoCatDetails());
 
     when(cosmoCatRepository.findAll()).thenReturn(entities);
-    when(cosmoCatMapper.toCosmoCatDetails(entities)).thenReturn(details);
+    when(cosmoCatRepositoryMapper.toCosmoCatDetails(entities)).thenReturn(details);
 
     List<CosmoCatDetails> result = cosmoCatService.getAllCosmoCats();
     assertEquals(details, result);
@@ -52,7 +52,7 @@ class CosmoCatServiceImplTest {
     CosmoCatDetails details = new CosmoCatDetails();
 
     when(cosmoCatRepository.findByNaturalId(catReference)).thenReturn(Optional.of(entity));
-    when(cosmoCatMapper.toCosmoCatDetails(entity)).thenReturn(details);
+    when(cosmoCatRepositoryMapper.toCosmoCatDetails(entity)).thenReturn(details);
 
     CosmoCatDetails result = cosmoCatService.getCosmoCatByReference(catReference);
     assertEquals(details, result);
@@ -72,9 +72,9 @@ class CosmoCatServiceImplTest {
     CosmoCatDetails details = new CosmoCatDetails();
     CosmoCatEntity entity = new CosmoCatEntity();
 
-    when(cosmoCatMapper.toCosmoCatEntity(details)).thenReturn(entity);
+    when(cosmoCatRepositoryMapper.toCosmoCatEntity(details)).thenReturn(entity);
     when(cosmoCatRepository.save(entity)).thenReturn(entity);
-    when(cosmoCatMapper.toCosmoCatDetails(entity)).thenReturn(details);
+    when(cosmoCatRepositoryMapper.toCosmoCatDetails(entity)).thenReturn(details);
 
     CosmoCatDetails result = cosmoCatService.saveCosmoCat(details);
     assertEquals(details, result);
@@ -88,7 +88,7 @@ class CosmoCatServiceImplTest {
 
     when(cosmoCatRepository.findByNaturalId(catReference)).thenReturn(Optional.of(entity));
     when(cosmoCatRepository.save(entity)).thenReturn(entity);
-    when(cosmoCatMapper.toCosmoCatDetails(entity)).thenReturn(details);
+    when(cosmoCatRepositoryMapper.toCosmoCatDetails(entity)).thenReturn(details);
 
     CosmoCatDetails result = cosmoCatService.saveCosmoCat(catReference, details);
     assertEquals(details, result);

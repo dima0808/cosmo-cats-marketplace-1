@@ -7,7 +7,7 @@ import com.example.cosmocatsmarketplace.common.CategoryType;
 import com.example.cosmocatsmarketplace.domain.ProductDetails;
 import com.example.cosmocatsmarketplace.repository.ProductRepository;
 import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
-import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
+import com.example.cosmocatsmarketplace.repository.mapper.ProductRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class ProductServiceImplTest {
   private ProductRepository productRepository;
 
   @MockBean
-  private GeneralRepositoryMapper productMapper;
+  private ProductRepositoryMapper productRepositoryMapper;
 
   @Autowired
   private ProductServiceImpl productService;
@@ -39,7 +39,7 @@ class ProductServiceImplTest {
     List<ProductDetails> details = List.of(new ProductDetails());
 
     when(productRepository.findAll()).thenReturn(entities);
-    when(productMapper.toProductDetails(entities)).thenReturn(details);
+    when(productRepositoryMapper.toProductDetails(entities)).thenReturn(details);
 
     List<ProductDetails> result = productService.getAllProducts();
     assertEquals(details, result);
@@ -52,7 +52,7 @@ class ProductServiceImplTest {
     ProductDetails details = new ProductDetails();
 
     when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(entity));
-    when(productMapper.toProductDetails(entity)).thenReturn(details);
+    when(productRepositoryMapper.toProductDetails(entity)).thenReturn(details);
 
     ProductDetails result = productService.getProductByReference(productReference);
     assertEquals(details, result);
@@ -75,9 +75,9 @@ class ProductServiceImplTest {
     ProductEntity savedEntity = new ProductEntity();
     ProductDetails savedDetails = new ProductDetails();
 
-    when(productMapper.toProductEntity(productDetails)).thenReturn(productEntity);
+    when(productRepositoryMapper.toProductEntity(productDetails)).thenReturn(productEntity);
     when(productRepository.save(productEntity)).thenReturn(savedEntity);
-    when(productMapper.toProductDetails(savedEntity)).thenReturn(savedDetails);
+    when(productRepositoryMapper.toProductDetails(savedEntity)).thenReturn(savedDetails);
 
     ProductDetails result = productService.saveProduct(productDetails);
     assertEquals(savedDetails, result);
@@ -94,7 +94,7 @@ class ProductServiceImplTest {
 
     when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(existingEntity));
     when(productRepository.save(existingEntity)).thenReturn(savedEntity);
-    when(productMapper.toProductDetails(savedEntity)).thenReturn(savedDetails);
+    when(productRepositoryMapper.toProductDetails(savedEntity)).thenReturn(savedDetails);
 
     ProductDetails result = productService.saveProduct(productReference, productDetails);
     assertEquals(savedDetails, result);

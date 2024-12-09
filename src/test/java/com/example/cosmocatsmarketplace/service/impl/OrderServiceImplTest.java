@@ -10,7 +10,7 @@ import com.example.cosmocatsmarketplace.repository.ProductRepository;
 import com.example.cosmocatsmarketplace.repository.entity.CosmoCatEntity;
 import com.example.cosmocatsmarketplace.repository.entity.OrderEntity;
 import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
-import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
+import com.example.cosmocatsmarketplace.repository.mapper.OrderRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.exception.OrderNotFoundException;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class OrderServiceImplTest {
   private CosmoCatRepository cosmoCatRepository;
 
   @MockBean
-  private GeneralRepositoryMapper orderMapper;
+  private OrderRepositoryMapper orderRepositoryMapper;
 
   @MockBean
   private ProductRepository productRepository;
@@ -49,7 +49,7 @@ class OrderServiceImplTest {
     List<OrderDetails> details = List.of(new OrderDetails());
 
     when(orderRepository.findAll()).thenReturn(entities);
-    when(orderMapper.toOrderDetails(entities)).thenReturn(details);
+    when(orderRepositoryMapper.toOrderDetails(entities)).thenReturn(details);
 
     List<OrderDetails> result = orderService.getAllOrders();
     assertEquals(details, result);
@@ -62,7 +62,7 @@ class OrderServiceImplTest {
     OrderDetails details = new OrderDetails();
 
     when(orderRepository.findByNaturalId(orderNumber)).thenReturn(Optional.of(entity));
-    when(orderMapper.toOrderDetails(entity)).thenReturn(details);
+    when(orderRepositoryMapper.toOrderDetails(entity)).thenReturn(details);
 
     OrderDetails result = orderService.getOrderByNumber(orderNumber);
     assertEquals(details, result);
@@ -95,8 +95,8 @@ class OrderServiceImplTest {
     when(cosmoCatRepository.findByNaturalId(catReference)).thenReturn(Optional.of(cosmoCatEntity));
     when(productRepository.findByNaturalId(productReference)).thenReturn(Optional.of(new ProductEntity()));
     when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
-    when(orderMapper.toOrderDetails(any(OrderEntity.class))).thenReturn(orderDetails);
-    when(orderMapper.toOrderEntity(any(OrderDetails.class))).thenReturn(orderEntity);
+    when(orderRepositoryMapper.toOrderDetails(any(OrderEntity.class))).thenReturn(orderDetails);
+    when(orderRepositoryMapper.toOrderEntity(any(OrderDetails.class))).thenReturn(orderEntity);
 
     OrderDetails result = orderService.saveOrder(catReference, orderDetails);
     assertEquals(orderDetails, result);

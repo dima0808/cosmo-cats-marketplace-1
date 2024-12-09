@@ -3,7 +3,7 @@ package com.example.cosmocatsmarketplace.service.impl;
 import com.example.cosmocatsmarketplace.domain.ProductDetails;
 import com.example.cosmocatsmarketplace.repository.ProductRepository;
 import com.example.cosmocatsmarketplace.repository.entity.ProductEntity;
-import com.example.cosmocatsmarketplace.repository.mapper.GeneralRepositoryMapper;
+import com.example.cosmocatsmarketplace.repository.mapper.ProductRepositoryMapper;
 import com.example.cosmocatsmarketplace.service.ProductService;
 import com.example.cosmocatsmarketplace.service.exception.ProductNotFoundException;
 import java.util.ArrayList;
@@ -19,18 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
-  private final GeneralRepositoryMapper productMapper;
+  private final ProductRepositoryMapper productRepositoryMapper;
 
   @Override
   @Transactional(readOnly = true)
   public List<ProductDetails> getAllProducts() {
-    return productMapper.toProductDetails(productRepository.findAll());
+    return productRepositoryMapper.toProductDetails(productRepository.findAll());
   }
 
   @Override
   @Transactional(readOnly = true)
   public ProductDetails getProductByReference(UUID productReference) {
-    return productMapper.toProductDetails(
+    return productRepositoryMapper.toProductDetails(
         productRepository.findByNaturalId(productReference)
             .orElseThrow(() -> new ProductNotFoundException(productReference)));
   }
@@ -38,8 +38,8 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional(propagation = Propagation.NESTED)
   public ProductDetails saveProduct(ProductDetails productDetails) {
-    return productMapper.toProductDetails(
-        productRepository.save(productMapper.toProductEntity(productDetails)));
+    return productRepositoryMapper.toProductDetails(
+        productRepository.save(productRepositoryMapper.toProductEntity(productDetails)));
   }
 
   @Override
@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     existingProduct.setDescription(productDetails.getDescription());
     existingProduct.setPrice(productDetails.getPrice());
     existingProduct.setCategories(new ArrayList<>(productDetails.getCategories()));
-    return productMapper.toProductDetails(productRepository.save(existingProduct));
+    return productRepositoryMapper.toProductDetails(productRepository.save(existingProduct));
   }
 
   @Override
